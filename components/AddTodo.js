@@ -31,6 +31,8 @@ const AddTodo = () => {
         style={styles.input}
         value={text}
         onChangeText={setText}
+        onSubmitEditing={onPress}
+        returnKeyType="go"
       />
       {Platform.select({
         ios: (

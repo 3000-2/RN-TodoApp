@@ -1,10 +1,12 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {KeyboardAvoidingView, Platform, StyleSheet} from 'react-native';
 import {SafeAreaProvider, SafeAreaView} from 'react-native-safe-area-context';
+
 import AddTodo from './components/AddTodo';
 import DateHead from './components/DateHead';
 import Empty from './components/Empty';
 import TodoList from './components/TodoList';
+import todosStorage from './storages/todosStorages';
 
 const App = () => {
   const today = new Date();
@@ -14,6 +16,29 @@ const App = () => {
     {id: 2, text: '리액트 네이티브 기초 공부', done: false},
     {id: 3, text: '투두리스트 만들기', done: false},
   ]);
+
+  useEffect(() => {
+    async function load() {
+      try {
+        const savedTodos = await todosStorage.get();
+        setTodos(savedTodos);
+      } catch (e) {
+        console.log(e);
+      }
+    }
+    load();
+  }, []);
+
+  useEffect(() => {
+    async function save() {
+      try {
+        await todosStorage.set(JSON.stringify(todos));
+      } catch (e) {
+        console.log(e);
+      }
+    }
+    save();
+  }, [todos]);
 
   const onInsert = text => {
     const nextId =
